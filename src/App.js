@@ -1,51 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
-import WebWorker from './web.worker.js';
-import './App.css';
+import WebWorker from './workers/web.worker.js';
+import style from './App.module.css';
 
 function App() {
-  const [wasm, setWasm] = useState(null);
-  const [number, setNumber] = useState(0);
-  const webWorker = React.useRef(new WebWorker()).current;
+  const worker = React.useRef(new WebWorker()).current;
+  const [input, setInput] = useState('');
+  const [output, setOutput] = useState('');
 
-  const onClickWebWorker = () => webWorker.postMessage(number);
-  const onClickWasm = () => wasm.greet();
+  const onChangeTextarea = e => setInput(e.target.value);
+
   useEffect(() => {
-    const onWebWorkerMessage = (e) => {
-      setNumber(e.data);
-    };
-    webWorker.addEventListener('message', onWebWorkerMessage);
-    return () => webWorker.removeEventListener('message', onWebWorkerMessage);
-  }, [number]);
+    worker.postMessage(input);
+  }, [worker, input]);
   useEffect(() => {
-    (async () => {
-      try {
-        const loadedWasm = await import('wasm-hello');
-        setWasm(loadedWasm);
-      } catch (e) {
-        console.error('caught error', e);
-      }
-    })();
-  }, []);
+    const onMessage = (e) => setOutput(e.data);
+    worker.addEventListener('message', onMessage);
+    return () => worker.removeEventListener('message', onMessage);
+  }, [worker]);
+
   return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-              className="App-link"
-              href="https://reactjs.org"
-              target="_blank"
-              rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {number}
-          <button onClick={onClickWebWorker}>Increment number with WebWorker</button>
-          {wasm && (<button onClick={onClickWasm}>Greet with WASM</button>)}
-        </header>
+      <div className={style.page}>
+        <h2>XML formatter</h2>
+        <p>This is an XML formatter written in Rust, compiled to WebAssembly and posted via a WebWorker</p>
+        <div className={style.formatter}>
+          <textarea onChange={onChangeTextarea} placeholder="Unformatted XML" />
+          <textarea disabled value={output} placeholder="Formatted XML" />
+        </div>
       </div>
   );
 }

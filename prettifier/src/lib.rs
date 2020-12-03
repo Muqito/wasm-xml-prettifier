@@ -1,3 +1,4 @@
+mod format_xml;
 mod utils;
 
 use wasm_bindgen::prelude::*;
@@ -9,16 +10,16 @@ use wasm_bindgen::prelude::*;
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     fn alert(s: &str);
 }
 
 #[wasm_bindgen]
 pub fn greet() {
-    alert("Hello, wasm-hello!");
+    alert("Hello, prettifier!");
 }
 
 #[wasm_bindgen]
-pub fn add(x: u32, y: u32) -> u32 {
-    x + y
+pub fn prettify_xml(s: &str) -> String {
+    format_xml::prettify_xml(s).expect("Couldn't parse XML")
 }

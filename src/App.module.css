@@ -1,0 +1,21 @@
+.page {
+  height: 100vh;
+  padding: 15px;
+  box-sizing: border-box;
+  display: grid;
+  grid-gap: 15px;
+  grid-template-rows: auto auto 1fr;
+}
+
+.formatter {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: 1fr 1fr;
+}
+
+textarea {
+  width: 100%;
+  resize: none;
+  box-sizing: border-box;
+  padding: 15px;
+}

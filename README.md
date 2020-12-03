@@ -1,6 +1,9 @@
 # React and WebAssembly
 This is a project with React and WebAssembly
 
+## Setup
+```wasm-pack build wasm-hello```
+
 ## Setup (from scratch)
 This is already done for this project.
 If you have Rust and wasm-pack installed you can run
